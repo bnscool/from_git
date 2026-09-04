@@ -224,56 +224,558 @@ A **Resource Group** in Azure is a logical container for resources that share th
 
 - ============================================================================
 
+# Virtualization: An In-Depth Explanation
+
+## Background
+
+In traditional computing, a single physical server runs a single operating system, and applications are installed directly on that OS. This approach has limitations, such as underutilization of hardware resources, difficulty in managing multiple servers, and lack of flexibility in scaling.
+
+**Virtualization** addresses these challenges by introducing a layer of abstraction between the hardware and the operating system. It enables the creation of multiple virtual instances, each running its own operating system and applications, on a single physical server. This technology has become fundamental in modern data centers and cloud computing environments.
+
+## Components of Virtualization
+
+1. **Hypervisor (Virtual Machine Monitor):**
+   - The hypervisor is a crucial component of virtualization. It sits between the hardware and the operating systems, managing and allocating resources to virtual machines (VMs).
+   - There are two types of hypervisors: Type 1 (bare-metal) runs directly on the hardware, while Type 2 (hosted) runs on top of an existing operating system.
+
+2. **Virtual Machines (VMs):**
+   - VMs are the instances created by the hypervisor. Each VM operates as an independent computer with its own virtualized hardware, including CPU, memory, storage, and network interfaces.
+   - Multiple VMs can run on a single physical server, allowing for efficient resource utilization.
+
+## Key Concepts in Virtualization
+
+1. **Server Virtualization:**
+   - In server virtualization, a physical server is divided into multiple VMs, each running its own OS. This allows for better utilization of hardware resources and easier management of servers.
+
+2. **Resource Pooling:**
+   - Virtualization enables the pooling of physical resources, such as CPU, memory, and storage. These resources can be dynamically allocated to VMs based on demand.
+
+3. **Isolation:**
+   - VMs operate independently of each other. This isolation ensures that issues in one VM do not affect others, providing a more secure and stable environment.
+
+4. **Snapshotting and Cloning:**
+   - Virtualization allows the creation of snapshots, which capture the state of a VM at a specific point in time. This facilitates easy backup and recovery. Cloning enables the rapid duplication of VMs for scalability.
+
+## Benefits of Virtualization
+
+1. **Server Consolidation:**
+   - Multiple VMs can run on a single physical server, reducing the need for a large number of physical machines. This leads to cost savings and energy efficiency.
+
+2. **Flexibility and Scalability:**
+   - Virtualization allows for the easy creation, modification, and scaling of VMs. This flexibility is essential in dynamic computing environments.
+
+3. **Disaster Recovery:**
+   - Virtualization simplifies disaster recovery by enabling the quick restoration of VMs from snapshots or backups.
+
+4. **Resource Optimization:**
+   - Resources can be allocated and deallocated dynamically based on workload, optimizing resource utilization.
+
+5. **Testing and Development:**
+   - Virtualization provides a sandbox for testing and development. VMs can be easily created, modified, and discarded without affecting the production environment.
+
+- ============================================================================
+
+# Types of Virtual Machines on Azure
+
+Azure provides a variety of virtual machine (VM) offerings to cater to different workload requirements. Each VM type is designed with specific hardware configurations to meet diverse performance and scalability needs.
+
+## General Purpose VMs
+
+**Example: Standard_D2s_v3**
+
+- **Description:** General-purpose VMs are well-balanced machines suitable for a variety of workloads. They offer a good balance of CPU-to-memory ratio and are suitable for development, testing, and small to medium-sized databases.
+
+- **Use Case:** Hosting websites, lightweight applications, or development and testing environments.
+
+## Compute Optimized VMs
+
+**Example: Standard_F2s_v2**
+
+- **Description:** Compute optimized VMs are designed for compute-intensive workloads that require high CPU power. They provide a high CPU-to-memory ratio, making them suitable for data analytics and computational tasks.
+
+- **Use Case:** Batch processing, gaming applications, and other CPU-intensive workloads.
+
+## Memory Optimized VMs
+
+**Example: Standard_E16s_v3**
+
+- **Description:** Memory optimized VMs are tailored for memory-intensive applications. They provide a high memory-to-CPU ratio, making them suitable for databases, in-memory caching, and analytics.
+
+- **Use Case:** Running large databases, in-memory caching, and analytics applications.
+
+## Storage Optimized VMs
+
+**Example: Standard_L8s_v2**
+
+- **Description:** Storage optimized VMs are designed for workloads that require high storage throughput and I/O performance. They provide high local disk throughput, making them suitable for big data and large databases.
+
+- **Use Case:** Big data applications, data warehousing, and large-scale databases.
+
+## GPU VMs
+
+**Example: Standard_NC6s_v3**
+
+- **Description:** GPU (Graphics Processing Unit) VMs are equipped with powerful graphics processors, suitable for graphics-intensive applications and parallel processing tasks.
+
+- **Use Case:** Machine learning, graphics rendering, and simulations that require GPU acceleration.
+
+## High-Performance Compute VMs
+
+**Example: Standard_H16r**
+
+- **Description:** High-Performance Compute VMs are designed for demanding, parallel processing and high-performance computing (HPC) applications.
+
+- **Use Case:** Simulations, modeling, and scenarios that require massive parallel processing.
+
+## Burstable VMs
+
+**Example: B1s**
+
+- **Description:** Burstable VMs provide a baseline level of CPU performance with the ability to burst above the baseline for a certain period. They are cost-effective for workloads with varying CPU usage.
+
+- **Use Case:** Development and testing environments, small websites, and applications with variable workloads.
+
+- ============================================================================
+
+# Azure Networking
+
+## Virtual Network
+
+A Virtual Network (VNet) in Azure is a logically isolated network that securely connects Azure resources and extends on-premises networks. Key features include:
+
+- **Isolation**: VNets provide isolation at the network level for segmenting resources and controlling traffic.
+
+- **Subnetting**: Divide a VNet into subnets for resource organization and traffic control.
+
+- **Address Space**: VNets have an address space defined using CIDR notation, determining the IP address range.
+
+## Subnets, CIDR
+
+### Subnets
+
+Subnets are subdivisions of a Virtual Network, allowing for better organization and traffic management.
+
+### CIDR (Classless Inter-Domain Routing)
+
+CIDR notation represents IP addresses and their routing prefix, specifying the range of IP addresses for a network.
+
+## Routes and Route Tables
+
+### Routes
+
+Routes dictate how network traffic is directed, specifying the destination and next hop.
+
+### Route Tables
+
+Route Tables are collections of routes associated with subnets, enabling custom routing rules.
+
+## Network Security Groups (NSGs)
+
+NSGs are fundamental for Azure's network security, allowing filtering of inbound and outbound traffic. Key aspects include:
+
+- **Rules**: NSGs define allowed or denied traffic based on source, destination, port, and protocol.
+
+- **Default Rules**: NSGs have default rules for controlling traffic within the Virtual Network and between subnets.
+
+- **Association**: NSGs can be associated with subnets or individual network interfaces.
+
+## Application Security Groups (ASGs)
+
+ASGs group Azure virtual machines based on application requirements, simplifying network security:
+
+- **Simplification**: ASGs allow defining rules based on application roles instead of individual IP addresses.
+
+- **Dynamic Membership**: ASGs support dynamic membership based on tags or other attributes.
+
+- **Rule Association**: Security rules can be associated with ASGs for intuitive and scalable network security management.
+
+- ============================================================================
+
+# Azure Networking Advanced
+
+## Azure App Gateway & WAF
+
+Azure Application Gateway is a web traffic load balancer that enables you to manage and route traffic to your web applications. Web Application Firewall (WAF) provides protection against web vulnerabilities. Key features include:
+
+- **Load Balancing**: Distributes incoming traffic across multiple servers to ensure no single server is overwhelmed.
+
+- **SSL Termination**: Offloads SSL processing, improving the efficiency of web servers.
+
+- **Web Application Firewall (WAF)**: Protects web applications from common web vulnerabilities and exploits.
+
+## Azure Load Balancer
+
+Azure Load Balancer distributes incoming network traffic across multiple servers to ensure no single server is overwhelmed. Key features include:
+
+- **Load Balancing Algorithms**: Supports different algorithms for distributing traffic, such as round-robin and least connections.
+
+- **Availability Sets**: Works seamlessly with availability sets to ensure high availability.
+
+- **Inbound and Outbound Traffic**: Balances both inbound and outbound traffic.
+
+## Azure DNS
+
+Azure DNS is a scalable and secure domain hosting service. It provides name resolution using the Microsoft Azure infrastructure. Key features include:
+
+- **Domain Hosting**: Hosts domain names and provides name resolution within Azure.
+
+- **Integration with Azure Services**: Easily integrates with other Azure services like App Service and Traffic Manager.
+
+- **Global Availability**: Provides low-latency responses globally.
+
+## Azure Firewall
+
+Azure Firewall is a managed, cloud-based network security service that protects your Azure Virtual Network resources. Key features include:
+
+- **Stateful Firewall**: Allows or denies traffic based on rules and supports stateful inspection.
+
+- **Application FQDN Filtering**: Filters traffic based on fully qualified domain names.
+
+- **Threat Intelligence Integration**: Integrates with threat intelligence feeds for enhanced security.
+
+## Virtual Network Peering and VNet Gateway
+
+### Virtual Network Peering
+
+Virtual Network Peering allows connecting Azure Virtual Networks directly, enabling resources in one VNet to communicate with resources in another. Key features include:
+
+- **Global VNet Peering**: Peering can be established across regions.
+
+- **Transitive Routing**: Traffic between peered VNets flows directly, improving performance.
+
+### VNet Gateway
+
+VNet Gateway enables secure communication between on-premises networks and Azure Virtual Networks. Key features include:
+
+- **Site-to-Site VPN**: Connects on-premises networks to Azure over an encrypted VPN tunnel.
+
+- **Point-to-Site VPN**: Enables secure remote access to Azure resources.
+
+## VPN Gateway
+
+Azure VPN Gateway provides secure, site-to-site connectivity between your on-premises network and Azure. Key features include:
+
+- **IPsec/IKE VPN Protocols**: Ensures secure communication over the Internet.
+
+- **High Availability**: Supports active-active and active-passive configurations for high availability.
+
+- **BGP Support**: Allows dynamic routing between your on-premises network and Azure.
+
+- ============================================================================
+
+# Install and Configure Nginx on Ubuntu
+
+## Step 1: Update Package Lists
+
+Before installing any new software, it's a good practice to update the package lists to ensure you get the latest version.
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+## Step 2: Install Nginx
+
+Install Nginx using the following command:
+
+```
+sudo apt install nginx
+```
+
+## Step 3: Start Nginx Service
+
+```
+sudo systemctl start nginx
+```
+
+## Step 4: Create HTML File
+
+```
+sudo vim /var/www/html/index.html
+```
+
+Add the HTML content, for example.
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Page</title>
+</head>
+<body>
+    <h1> I Learnt how networking works in Azure today</h1>
+</body>
+</html>
+```
+
+Save the file.
+
+### Restart Nginx
+
+```
+sudo systemctl restart nginx
+```
+
+- ============================================================================
+
+# Azure Networking Interview Q&A
+
+### What is the difference between NSG and ASG ?
+ASGs are applied to VMs and are used in conjunction with NSGs. By associating an ASG tag with a network security rule, you can define rules that apply to a group of VMs sharing the same tag.
+ASGs simplify the management of security rules in a multi-tier application by grouping VMs that belong to the same application tier. This makes it easier to apply and manage security policies for a specific application.
+
+### How can you block the access to a your vm from a subnet ?
+By default traffic is allowed between subnets with in the VNet in Azure. This is because of a default NSG rule “AllowVnetInBound”. 
+
+The priority of this rule is 65000, so we need to create a Deny rule with less than 65000 priority number.
+
+### Are Azure NSGs stateful or stateless ?
+They are stateful in nature. That means if you allow a port for inbound traffic traffic to receive the request. You don’t have to open the port in outbound rules to send response back.
+
+Example: If you host a host an application on port 80 in azure vm and allow inbound traffic for customers to access it. You don’t need to open port 80 in outbound traffic to send response back to the customer.
+
+### What is the difference between Azure Firewall and NSG ?
+Firewall:
+Designed for controlling both outbound and inbound traffic to and from resources within a Virtual Network (VNet).
+
+NSG:
+Typically associated with subnets or individual network interfaces to control traffic within a VNet and between VNets.
+
+### What are the advantages of resource groups in azure ?
+- Logical Organization
+- Lifecycle Management
+- Resource Group Tagging
+- Role-Based Access Control (RBAC)
+- Cost Management
+- Resource Group Templates (Azure Resource Manager Templates)
+- Resource Locks
+
+### What is the difference between Azure User Data and Custom Data ?
+User data is a new version of custom data and it offers added benefits. User data persists and lives in the cloud, accessible and updatable anytime. Custom data vanishes after first boot, accessible only during VM creation.
+
+### What is the difference between Azure App Gateway and Azure LB ?
+
+#### Azure Application Gateway:
+Operates at Layer 7 (Application layer) of the OSI model.
+Provides advanced application-level routing, SSL termination, and web application firewall (WAF) capabilities.
+Suited for distributing traffic based on application awareness.
+
+#### Azure Load Balancer:
+Operates at Layer 4 (Transport layer) of the OSI model.
+Distributes network traffic based on IP address and port.
+Suitable for generic TCP/UDP load balancing without application-specific features.
+
+### Assume your company is using all the ideal Azure Networking setup and your application is deployed in the web subnet , Explain the traffic flow to your app ?
+
+#### User Access:
+- External users access the application over the internet.
+- DNS resolves the application's domain name to the associated public IP address.
+
+#### Internet Traffic to Azure:
+-Incoming internet traffic reaches Azure through Azure Front Door, Azure Application Gateway, or Azure Load Balancer, depending on the specific requirements of the application.
+- These services provide load balancing, SSL termination, and other application-level features.
+
+#### Traffic Routing Within Azure:
+- Traffic is directed to the public IP address associated with the Azure Application Gateway or Load Balancer.
+- The gateway or load balancer routes traffic to the backend pool of the web servers in the web subnet.
+
+#### Network Security Group (NSG) Enforcement:
+- Network Security Groups associated with the web subnet control inbound and outbound traffic.
+- NSG rules ensure that only required traffic is allowed, providing security at the network layer.
+- Azure Virtual Network (VNet) Components:
+- The web subnet is part of an Azure Virtual Network, which acts as an isolated network environment.
+- Subnets within the VNet communicate with each other through the VNet's internal routing.
+
+#### Application Servers:
+- Web servers within the web subnet process incoming requests
+
+#### Describe the purpose of Azure Bastion and when it is used for secure remote access to virtual machines.
+- Secure Remote Access:
+- Elimination of Public Internet Exposure:
+- Reduced Attack Surface:
+- Azure Bastion Integration:
+- Simplified Connectivity:
+- Azure Portal-Based Access:
+- Role-Based Access Control (RBAC):
+- Multi-Factor Authentication (MFA):
+- Audit and Monitoring:
+
+- ============================================================================
+
+# Azure Blob Storage
+
+1. What is it?
+
+    Azure Blob Storage is a cloud-based object storage solution provided by Microsoft Azure.
+    It is designed to store and manage large amounts of unstructured data, such as documents, images, videos, and other types of binary and text data.
+    Blobs are organized into containers, and each blob is assigned a unique URL for access.
+
+2. When to use it?
+
+    Use Azure Blob Storage when you need to store and retrieve large amounts of unstructured data.
+    It is suitable for scenarios like serving images or videos to a website, storing backups, and handling data for analytics and big data processing.
+
+3. Example from DevOps Engineer point of view?
+
+    A DevOps engineer may use Azure Blob Storage to store artifacts and binaries produced during the build process, ensuring a centralized and scalable storage solution.
+    Azure Storage Explorer or Azure CLI can be used to automate the uploading and retrieval of artifacts during deployment pipelines.
+
+4. Equivalent service in AWS:
+
+    The equivalent service in AWS is Amazon Simple Storage Service (S3). S3 is also an object storage service designed for scalable and secure storage of objects, such as files and data.
+
+- ============================================================================
+
+# Azure File Storage
+
+1. What is it?
+
+    Azure File Storage is a fully managed file share service in the cloud.
+    It provides the Server Message Block (SMB) protocol for sharing files across applications and VMs in the Azure cloud.
+    Azure File Storage is useful for applications that require shared file access, such as configuration files or data files.
+
+2. When to use it?
+
+    Use Azure File Storage when you need a shared file system that can be accessed from multiple VMs or applications.
+    It is suitable for scenarios like storing configuration files, sharing data between applications, and serving as a common storage location for applications in a cloud environment.
+
+3. Example from DevOps Engineer point of view?
+
+    A DevOps engineer may leverage Azure File Storage to store configuration files that are shared among multiple application instances.
+    In a deployment pipeline, scripts or configuration files stored in Azure File Storage can be mounted to VMs or containers during the deployment process.
+
+4. Equivalent service in AWS:
+
+    The equivalent service in AWS is Amazon Elastic File System (EFS). EFS provides scalable file storage for use with Amazon EC2 instances, supporting the Network File System (NFS) protocol.
+
+- ============================================================================
+
+# Azure Tables
+
+1. What is it?
+
+    Azure Tables is a NoSQL data store service provided by Azure.
+    It stores large amounts of semi-structured data and allows for fast and efficient querying using a key-based access model.
+    Data is organized into tables, and each table can store billions of entities.
+
+2. When to use it?
+
+    Use Azure Tables when you need a highly scalable NoSQL data store for semi-structured data with simple key-based access.
+    It is suitable for scenarios like storing configuration data, user profiles, and other data where a key-value or key-attribute data model is appropriate.
+
+3. Example from DevOps Engineer point of view?
+
+    A DevOps engineer may use Azure Tables to store configuration settings for applications or services.
+    During the deployment process, scripts can retrieve configuration data from Azure Tables to customize the behavior of deployed applications.
+
+4. Equivalent service in AWS:
+
+    While AWS does not have a direct equivalent service for Azure Tables, Amazon DynamoDB is a similar NoSQL database service that provides key-value and document storage. DynamoDB can be used for similar use cases.
+
+- ============================================================================
+
+# Azure Queue Storage
+
+1. What is it?
+
+    Azure Queue Storage is a message queue service that allows decoupling of components in a distributed application.
+    It provides a reliable way to store and retrieve messages between application components, ensuring asynchronous communication.
+
+2. When to use it?
+
+    Use Azure Queue Storage when you need to enable communication and coordination between different parts of a distributed application.
+    It is suitable for scenarios like handling background jobs, managing tasks asynchronously, and facilitating communication between loosely coupled components.
+
+3. Example from DevOps Engineer point of view?
+
+    A DevOps engineer may use Azure Queue Storage to implement a message queue for processing background tasks or managing communication between microservices.
+    During deployment, scripts can enqueue messages to trigger specific actions or coordinate tasks between different components.
+
+4. Equivalent service in AWS:
+
+    The equivalent service in AWS is Amazon Simple Queue Service (SQS). SQS provides a fully managed message queue service for decoupling components in a distributed system.
+
+- ============================================================================
+
+# Install Azure CLI
+
+### Installation Overview
+https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
+
+### Install on Windows
+https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli
+
+### Install on Linux
+https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
+
+### Install on Mac
+https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos 
 
 
 - ============================================================================
 
+# Create VM using Azure CLI
 
+### Start with creating a Resource Group
 
-- ============================================================================
+```
+az group create --name learn-azure-cli --location eastus
+```
 
+### Set the Resource Group as default (Optional)
 
+```
+az config set defaults.group=learn-azure-cli
+```
 
-- ============================================================================
+### Create VM with Vnet
 
+```
+az vm create \
+  --resource-group learn-azure-cli \
+  --name vmName \ 
+  --image Ubuntu2204 \
+  --vnet-name default \  
+  --subnet default \    
+  --generate-ssh-keys \
+  --output json \
+  --verbose
+```
 
+### Delete the Resource Group to delete all the resources
 
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-- 
-
+```
+az group delete --name learn-azure-cli
+```
 
 - ============================================================================
 
-
-
-- ============================================================================
-
-
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "abhioshekveeramalla11232",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2023-01-01",
+            "tags": {
+                "displayName": "abhioshekveeramalla11232"
+            },
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            }
+        }
+    ],
+    "outputs": {}
+}
 
 - ============================================================================
 
