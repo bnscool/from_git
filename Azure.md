@@ -751,7 +751,7 @@ az group delete --name learn-azure-cli
 ```
 
 - ============================================================================
-
+```
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
@@ -776,7 +776,7 @@ az group delete --name learn-azure-cli
     ],
     "outputs": {}
 }
-
+```
 - ============================================================================
 
 # Commands to access Blob from the Virtual Machine
