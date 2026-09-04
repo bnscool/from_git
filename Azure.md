@@ -751,6 +751,8 @@ az group delete --name learn-azure-cli
 ```
 
 - ============================================================================
+# Storage account
+## storage-account.json
 ```
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
