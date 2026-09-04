@@ -43,3 +43,96 @@ In essence, cloud computing can involve both third-party providers (public cloud
 **Private Cloud:** Your own exclusive digital space.
 
 **Hybrid Cloud:** Using both your private space and the shared online space when needed.
+========================================================================================
+
+# Vocabulary in Cloud Computing
+
+## Virtualization
+
+Virtualization is the process of creating a virtual version of something, such as an operating system, server, storage, or network resources.
+
+## Virtual Machine
+
+A Virtual Machine (VM) is a software-based emulation of a physical computer. It allows running multiple operating systems on a single physical machine.
+
+## API (Application Programming Interface)
+
+API is a set of rules and protocols that allows different software applications to communicate with each other. It defines how software components should interact.
+
+## Regions
+
+Regions in cloud computing refer to geographic locations where cloud providers have data centers. Each region contains multiple data centers.
+
+## Availability Zones
+
+Availability Zones are isolated locations within a region that have their own power, cooling, and networking. They are designed to provide high availability and fault tolerance.
+
+## Scalability
+
+Scalability is the ability of a system to handle an increasing amount of work or its potential to be enlarged to accommodate that growth.
+
+## Elasticity
+
+Elasticity in cloud computing refers to the ability to dynamically scale resources up or down based on demand.
+
+## Agility
+
+Agility is the capability of quickly and easily adapting to changes. In the context of cloud computing, it involves the rapid deployment of resources and applications.
+
+## High Availability
+
+High Availability (HA) ensures that a system or application is operational and accessible for a high percentage of time, typically 99.9% or higher.
+
+## Fault Tolerance
+
+Fault Tolerance is the ability of a system to continue operating without interruption in the presence of hardware or software failures.
+
+## Disaster Recovery
+
+Disaster Recovery involves the planning and processes for restoring and recovering data and systems after a natural or human-induced disaster.
+
+## Load Balancing
+
+Load Balancing is the distribution of network traffic or computing workload across multiple servers to ensure no single server is overwhelmed.
+
+========================================================================================
+
+# Exploring Regions and Availability Zones in Azure
+
+## Regions in Azure
+
+Azure is a cloud computing platform provided by Microsoft, and it is globally distributed across multiple geographic locations known as regions. Each Azure region is a set of data centers deployed within a defined geographic area, and it is designed to provide low-latency access to Azure services for users and applications in that region.
+
+### Key Points about Azure Regions:
+
+- **Global Presence:** Azure has a vast global presence with data centers strategically located around the world.
+  
+- **Region Pairing:** Azure regions are often paired for data redundancy and resiliency. In the event of a regional failure, paired regions can help ensure continuity.
+
+- **Compliance and Data Residency:** Organizations can choose specific regions to comply with data residency requirements and regulations.
+
+## Availability Zones in Azure
+
+Azure Availability Zones are part of Azure's high-availability architecture, providing redundancy and resiliency for applications and data. Each Azure region is divided into multiple Availability Zones, which are essentially unique physical locations with independent power, cooling, and networking.
+
+### Key Points about Azure Availability Zones:
+
+- **High Availability:** By distributing resources across Availability Zones, Azure ensures that applications remain available even in the face of localized failures, such as hardware or network failures.
+
+- **Fault Isolation:** Availability Zones are designed to be isolated from one another, meaning a failure in one zone does not impact the availability of resources in other zones.
+
+- **Multi-Data Center Architectures:** Availability Zones are essential for designing and deploying multi-data center architectures in Azure.
+
+## How to Choose Regions and Availability Zones
+
+When deploying resources in Azure, it's crucial to consider factors such as:
+
+- **Proximity to Users:** Choose a region that is geographically close to your users to minimize latency.
+
+- **Compliance Requirements:** Ensure that the chosen region complies with regulatory and data residency requirements.
+
+- **High Availability Needs:** If high availability is a priority, distribute resources across multiple Availability Zones within a region.
+
+- **Disaster Recovery Planning:** Leverage region pairing for effective disaster recovery planning.
+
+========================================================================================
