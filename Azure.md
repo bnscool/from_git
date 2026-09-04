@@ -779,37 +779,382 @@ az group delete --name learn-azure-cli
 
 - ============================================================================
 
+# Commands to access Blob from the Virtual Machine
+
+### Fetch the access token 
+
+```
+access_token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fstorage.azure.com%2F' -H Metadata:true | jq -r '.access_token')
+```
 
 
-- ============================================================================
+### Access the blob from Virtual Machine
 
+storage_account_name=""
+container_name=""
+blob_name=""
 
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
-
-- ============================================================================
-
-
+```
+curl "https://$storage_account_name.blob.core.windows.net/$container_name/$blob_name" -H "x-ms-version: 2017-11-09" -H "Authorization: Bearer $access_token"
+```
 
 - ============================================================================
 
+# Command to create ACR ImagePullSecret
 
+```
+kubectl create secret docker-registry <secret-name> \
+    --namespace <namespace> \
+    --docker-server=<container-registry-name>.azurecr.io \
+    --docker-username=<service-principal-ID> \
+    --docker-password=<service-principal-password>
+```
 
 - ============================================================================
 
+# Azure DevOps Interview Questions
 
+### Complete CI/CD Pipeline process:
+
+Scenario: How does the Azure DevOps CI/CD Pipeline look in your organization ?
+
+Continuous Integration (CI):
+
+    Triggers on code changes.
+    Clones code from repository.
+    Runs unit tests and static code analysis.
+    Builds artifacts (e.g., compiled code, container images).
+    Stores artifacts in Azure Pipelines artifacts for deployment.
+
+Continuous Delivery (CD):
+
+    Triggers on successful CI completion or manually.
+    Deploys artifacts to designated environments (staging, production).
+    Runs environment-specific tests (e.g., integration, acceptance).
+    Approvals or gates can be implemented before deployment.
+    Optionally, rolls back deployments if issues arise.
+
+### Securing Sensitive Information in Pipelines:
+
+Scenario: You need to securely store API keys and other secrets used in your pipeline tasks. How would you ensure their protection while maintaining pipeline functionality?
+
+Answer: Explain using Azure Key Vault to store secrets and access them using managed identities or service connections with minimal privileges. Emphasize avoiding hardcoding secrets in the pipeline script.
+
+### Integrating Azure Container Registry (ACR) with Pipelines:
+
+Scenario: Your application uses Docker containers. How would you integrate ACR with Azure Pipelines for building, pushing, and deploying container images?
+
+Answer: Describe the process of configuring Docker tasks in the pipeline to build images, authenticate with ACR using service connections, push images to the registry, and deploy them to specific environments.
+
+### Debugging Pipeline Failures:
+
+Scenario: Your pipeline consistently fails at a specific stage. How would you approach troubleshooting and identifying the root cause of the issue?
+
+Answer: Highlight utilizing built-in debugging tools like logs, pipeline diagnostics, and Azure Monitor, alongside manual code review and environment checks. Mention potential causes like resource constraints, task configuration errors, or infrastructure issues.
+
+### Handling Code Merges and Rollbacks in Pipelines:
+
+Scenario: You discover a critical bug in the recently deployed production environment. How would you leverage Azure Pipelines for a rollback and ensure safe merging of a fix?
+
+Answer: Explain using deployment environments and conditional triggers to target specific environments. Discuss leveraging branching strategies and continuous deployment practices to revert changes and integrate a fix seamlessly.
+
+### Utilizing Azure Runners for Self-Hosted Environments:
+
+Scenario: Your company has specific infrastructure requirements and needs to run pipelines on self-hosted machines. How would you leverage Azure Runners for this purpose?
+
+Answer: Discuss configuring and managing self-hosted runners, ensuring security considerations like network isolation and access control. Mention using the appropriate runner OS and tools based on your project needs.
+
+### Implementing Role-Based Access Control (RBAC) in Pipelines:
+
+Scenario: Your team has various roles with different access needs. How would you configure RBAC within Azure Pipelines to ensure users have appropriate permissions?
+
+Answer: Explain leveraging built-in roles and custom definitions to grant access to pipelines, repositories, and resources. Highlight the importance of least privilege and separation of duties principles.
+
+### Automating Infrastructure Provisioning with Pipelines:
+
+Scenario: You want to automate infrastructure provisioning and deployment alongside your application code. How would you integrate infrastructure as code (IaC) tools like Terraform with Azure Pipelines?
+
+Answer: Discuss using tasks like Azure Resource Manager or Terraform tasks to manage infrastructure creation and deletion within the pipeline workflow. Mention benefits like faster deployments and improved consistency.
+
+### Maintaining Pipeline Security Throughout the CI/CD Process:
+
+Scenario: How would you ensure overall security within your Azure Pipelines throughout the CI/CD process, from code building to deployment?
+
+Answer: Discuss a holistic approach, including secure code practices, vulnerability scanning, container image scanning, service principal usage with least privilege, and regular pipeline audits.
 
 - ============================================================================
+
+# AKS setup using CLI
+
+## Create Azure Resource Group
+
+```
+az group create --name keyvault-demo --location eastus
+```
+
+## AKS Creation and Configuration
+
+### Create an AKS cluster with Azure Key Vault provider for Secrets Store CSI Driver support
+
+```
+az aks create --name keyvault-demo-cluster -g keyvault-demo --node-count 1 --enable-addons azure-keyvault-secrets-provider --enable-oidc-issuer --enable-workload-identity
+```
+
+### Get the Kubernetes cluster credentials (Update kubeconfig)
+
+```
+az aks get-credentials --resource-group keyvault-demo --name keyvault-demo-cluster
+```
+
+#### Verify that each node in your cluster's node pool has a Secrets Store CSI Driver pod and a Secrets Store Provider Azure pod running
+
+```
+kubectl get pods -n kube-system -l 'app in (secrets-store-csi-driver,secrets-store-provider-azure)' -o wide
+```
+
+## Keyvault creation and configuration
+
+- Create a key vault with Azure role-based access control (Azure RBAC).
+
+```
+az keyvault create -n aks-demo-abhi -g keyvault-demo -l eastus --enable-rbac-authorization
+```
+
+- ============================================================================
+
+# Connect your Azure ID to the Azure Key Vault Secrets Store CSI Driver 
+
+### Configure workload identity
+
+```
+export SUBSCRIPTION_ID=fe4a1fdb-6a1c-4a6d-a6b0-dbb12f6a00f8
+export RESOURCE_GROUP=keyvault-demo
+export UAMI=azurekeyvaultsecretsprovider-keyvault-demo-cluster
+export KEYVAULT_NAME=aks-demo-abhi
+export CLUSTER_NAME=keyvault-demo-cluster
+
+az account set --subscription $SUBSCRIPTION_ID
+```
+
+### Create a managed identity
+
+```
+az identity create --name $UAMI --resource-group $RESOURCE_GROUP
+
+export USER_ASSIGNED_CLIENT_ID="$(az identity show -g $RESOURCE_GROUP --name $UAMI --query 'clientId' -o tsv)"
+export IDENTITY_TENANT=$(az aks show --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --query identity.tenantId -o tsv)
+```
+
+### Create a role assignment that grants the workload ID access the key vault
+
+```
+export KEYVAULT_SCOPE=$(az keyvault show --name $KEYVAULT_NAME --query id -o tsv)
+
+az role assignment create --role "Key Vault Administrator" --assignee $USER_ASSIGNED_CLIENT_ID --scope $KEYVAULT_SCOPE
+```
+
+### Get the AKS cluster OIDC Issuer URL 
+
+```
+export AKS_OIDC_ISSUER="$(az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --query "oidcIssuerProfile.issuerUrl" -o tsv)"
+echo $AKS_OIDC_ISSUER
+```
+
+### Create the service account for the pod
+
+```
+export SERVICE_ACCOUNT_NAME="workload-identity-sa"
+export SERVICE_ACCOUNT_NAMESPACE="default" 
+```
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: ${USER_ASSIGNED_CLIENT_ID}
+  name: ${SERVICE_ACCOUNT_NAME}
+  namespace: ${SERVICE_ACCOUNT_NAMESPACE}
+EOF
+```
+
+### Setup Federation
+
+```
+export FEDERATED_IDENTITY_NAME="aksfederatedidentity" 
+
+az identity federated-credential create --name $FEDERATED_IDENTITY_NAME --identity-name $UAMI --resource-group $RESOURCE_GROUP --issuer ${AKS_OIDC_ISSUER} --subject system:serviceaccount:${SERVICE_ACCOUNT_NAMESPACE}:${SERVICE_ACCOUNT_NAME}
+```
+
+### Create the Secret Provider Class
+
+```
+cat <<EOF | kubectl apply -f -
+# This is a SecretProviderClass example using workload identity to access your key vault
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-wi # needs to be unique per namespace
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    clientID: "${USER_ASSIGNED_CLIENT_ID}" # Setting this to use workload identity
+    keyvaultName: ${KEYVAULT_NAME}       # Set to the name of your key vault
+    cloudName: ""                         # [OPTIONAL for Azure] if not provided, the Azure environment defaults to AzurePublicCloud
+    objects:  |
+      array:
+        - |
+          objectName: secret1             # Set to the name of your secret
+          objectType: secret              # object types: secret, key, or cert
+          objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+        - |
+          objectName: key1                # Set to the name of your key
+          objectType: key
+          objectVersion: ""
+    tenantId: "${IDENTITY_TENANT}"        # The tenant ID of the key vault
+EOF
+```
+
+- ============================================================================
+
+# Verify Keyvault AKS Integration
+
+### Create a sample pod to mount the secrets
+
+```
+cat <<EOF | kubectl apply -f -
+# This is a sample pod definition for using SecretProviderClass and workload identity to access your key vault
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-secrets-store-inline-wi
+  labels:
+    azure.workload.identity/use: "true"
+spec:
+  serviceAccountName: "workload-identity-sa"
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-4
+      command:
+        - "/bin/sleep"
+        - "10000"
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "azure-kvname-wi"
+EOF
+```
+
+### List the contents of the volume
+
+```
+kubectl exec busybox-secrets-store-inline-wi -- ls /mnt/secrets-store/
+```
+
+### Verify the contents in the file
+
+```
+kubectl exec busybox-secrets-store-inline -- cat /mnt/secrets-store/foo-secret
+```
+
+- ============================================================================
+
+# Delete Everything
+
+```
+az group delete --name keyvault-demo
+```
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
+
+
+
+============================================================================
 
 
 
